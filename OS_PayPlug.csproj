@@ -49,6 +49,12 @@
     <Reference Include="NBrightDNN">
       <HintPath>..\NBrightBuy\_external\NBrightDNN.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Payplug, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\Payplug.1.1.0.0\lib\net45\Payplug.dll</HintPath>
+    </Reference>
     <Reference Include="RazorEngine">
       <HintPath>..\NBrightBuy\_external\RazorEngine.dll</HintPath>
     </Reference>
@@ -70,9 +76,21 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Components\AjaxProvider.cs" />
+    <Compile Include="Components\Card.cs" />
+    <Compile Include="Components\CertificatesHandler.cs" />
+    <Compile Include="Components\ClientWebException.cs" />
+    <Compile Include="Components\Configuration.cs" />
+    <Compile Include="Components\ConfigurationException.cs" />
+    <Compile Include="Components\Customer.cs" />
+    <Compile Include="Components\InvalidApiResourceException.cs" />
+    <Compile Include="Components\Notification.cs" />
+    <Compile Include="Components\Payment.cs" />
     <Compile Include="Components\PaymentProvider.cs" />
     <Compile Include="Components\ProviderUtils.cs" />
+    <Compile Include="Components\Refund.cs" />
     <Compile Include="Components\RemotePost.cs" />
+    <Compile Include="Components\Routes.cs" />
+    <Compile Include="Components\Service.cs" />
     <Compile Include="notify.ashx.cs">
       <DependentUpon>notify.ashx</DependentUpon>
     </Compile>
@@ -85,15 +103,20 @@
       <DependentUpon>Payment.ascx.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resource.Designer.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="App_LocalResources\Payment.ascx.fr-FR.resx" />
     <EmbeddedResource Include="App_LocalResources\Payment.ascx.resx" />
+    <EmbeddedResource Include="Resource.resx" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="DNNpackager.dnnpack" />
     <None Include="notify.ashx" />
+    <None Include="packages.config" />
     <None Include="README.md" />
+    <None Include="Resources\cacert.pem" />
     <None Include="Themes\config\default\methodselection.cshtml" />
     <None Include="Themes\config\default\payment_fail.cshtml" />
     <None Include="Themes\config\default\payment_ok.cshtml" />
@@ -114,6 +137,7 @@
       <Name>NBrightBuy</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

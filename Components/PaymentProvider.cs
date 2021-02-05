@@ -10,10 +10,11 @@ using DotNetNuke.Entities.Users;
 using NBrightCore.common;
 using NBrightDNN;
 using Nevoweb.DNN.NBrightBuy.Components;
+using OS_PayPlug.Components;
 
 namespace OS_PayPlug
 {
-    public class OSPayPalPaymentProvider : Nevoweb.DNN.NBrightBuy.Components.Interfaces.PaymentsInterface
+    public class OSPayPlugPaymentProvider : Nevoweb.DNN.NBrightBuy.Components.Interfaces.PaymentsInterface
     {
         public override string Paymentskey { get; set; }
 
@@ -21,7 +22,7 @@ namespace OS_PayPlug
         {
             var templ = "";
             var objCtrl = new NBrightBuyController();
-            var info = objCtrl.GetPluginSinglePageData("OSPayPalpayment", "OSPayPalPAYMENT", Utils.GetCurrentCulture());
+            var info = objCtrl.GetPluginSinglePageData("OSPayPlugpayment", "OSPayPlugPAYMENT", Utils.GetCurrentCulture());
             var templateName = info.GetXmlProperty("genxml/textbox/checkouttemplate");
             var passSettings = info.ToDictionary();
             foreach (var s in StoreSettings.Current.Settings()) // copy store setting, otherwise we get a byRef assignement
@@ -45,6 +46,43 @@ namespace OS_PayPlug
             orderData.SavePurchaseData();
             try
             {
+
+                 var paymentData = new Dictionary<string, dynamic>
+                 {
+                     { "amount", 3300},
+                     { "currency", "EUR"},
+                     {
+                        "customer", new Dictionary<string, object>
+ 
+                         {
+                             { "email", "john.watson@example.net"},
+                             { "first_name", "John"},
+                             { "last_name", "Watson"}
+                         }
+                     },
+                     {
+                        "hosted_payment", new Dictionary<string, object>
+ 
+                         {
+                             { "return_url", "https://example.net/success?id=42710"},
+                             { "cancel_url", "https://example.net/cancel?id=42710"}
+                         }
+                     },
+                     { "notification_url", "https://example.net/notifications?id=42710"},
+                     {
+                        "metadata", new Dictionary<string, object>
+ 
+                         {
+                             { "customer_id", "42710"}
+                         }
+                     },
+                     { "save_card", false},
+                     { "force_3ds", true}
+                 };
+                 var payment = PaymentUtils.Create(paymentData);
+
+
+
                 HttpContext.Current.Response.Clear();
                 HttpContext.Current.Response.Write(ProviderUtils.GetBankRemotePost(orderData));
             }
