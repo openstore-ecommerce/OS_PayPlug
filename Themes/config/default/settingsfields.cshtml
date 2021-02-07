@@ -116,28 +116,7 @@ var info = (NBrightInfo)Model.List.First();
         <div class="form-group">
             <div class="col-sm-2"></div>
             <div class="col-sm-5">
-                <h3>@ResourceKey("Payment.OSPayPalsettings")</h3>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label class="col-sm-2 control-label">@ResourceKey("Payment.paypalid")</label>
-            <div class="col-sm-5">
-                @TextBox(info, "genxml/textbox/paypalid", "class='form-control'")
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label class="col-sm-2 control-label">@ResourceKey("Payment.paymentURL")</label> (https://www.paypal.com/cgi-bin/webscr)
-            <div class="col-sm-5">
-                @TextBox(info, "genxml/textbox/paymenturl", "class='form-control'", "https://www.sandbox.paypal.com/cgi-bin/webscr")
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label class="col-sm-2 control-label">@ResourceKey("Payment.verifyURL")</label> ({yourdomain}/DesktopModules/NBright/NBrightPayPal/notify.ashx)
-            <div class="col-sm-5">
-                @TextBox(info, "genxml/textbox/verifyurl", "class='form-control'", "")
+                <h3>@ResourceKey("Payment.settings")</h3>
             </div>
         </div>
 
@@ -149,19 +128,29 @@ var info = (NBrightInfo)Model.List.First();
         </div>
 
         <div class="form-group">
-            <label class="col-sm-2 control-label">@ResourceKey("Payment.charset")</label>
-            <div class="col-sm-3">
-                @TextBox(info, "genxml/textbox/charset", "class='form-control'", "utf-8")
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label class="col-sm-2 control-label">@ResourceKey("Payment.extrafields")</label>
+            <label class="col-sm-2 control-label">SecretKey</label>
             <div class="col-sm-6">
-                @TextArea(info, "genxml/textbox/extrafields", "class='form-control' rows='4'", "first_name=genxml/billaddress/genxml/textbox/firstname,last_name=genxml/billaddress/genxml/textbox/lastname,address1=genxml/billaddress/genxml/textbox/unit,address2=genxml/billaddress/genxml/textbox/street,city=genxml/billaddress/genxml/textbox/city,country=genxml/billaddress/genxml/dropdownlist/country/@@selectedtext,zip=genxml/billaddress/genxml/textbox/postalcode,email=genxml/billaddress/genxml/textbox/email")
+                @TextBox(info, "genxml/textbox/secretkey", "class='form-control' ", "")
             </div>
         </div>
-
+        <div class="form-group">
+            <label class="col-sm-2 control-label">PayPlug API Base Url</label>
+            <div class="col-sm-6">
+                @TextBox(info, "genxml/textbox/apibaseurl", "class='form-control' ", "https://api.payplug.com")
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">API verison</label>
+            <div class="col-sm-6">
+                @TextBox(info, "genxml/textbox/apiversion", "class='form-control' ", "2019-08-06")
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">API Url version path</label>
+            <div class="col-sm-6">
+                @TextBox(info, "genxml/textbox/urlversionpath", "class='form-control' ", "v1")
+            </div>
+        </div>
 
     </div>
 

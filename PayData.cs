@@ -32,10 +32,14 @@ namespace OS_PayPlug
             var alreadypaid = oInfo.PurchaseInfo.GetXmlPropertyDouble("genxml/alreadypaid");
 
             ItemId = oInfo.PurchaseInfo.ItemID.ToString("");
-            PostUrl = settings.GetXmlProperty("genxml/textbox/paymenturl");
-            VerifyUrl = settings.GetXmlProperty("genxml/textbox/verifyurl");
-            PayPalId = settings.GetXmlProperty("genxml/textbox/paypalid");
+            PostUrl = oInfo.PurchaseInfo.GetXmlProperty("genxml/posturl");
             CartName = "NBrightStore";
+            SecretKey = settings.GetXmlProperty("genxml/textbox/secretkey");
+            ApiBaseUrl = settings.GetXmlProperty("genxml/textbox/apibaseurl");
+            if (ApiBaseUrl == "") ApiBaseUrl = "https://api.payplug.com";
+            ApiVersion = settings.GetXmlProperty("genxml/textbox/apiversion");
+            UrlVersionPath = settings.GetXmlProperty("genxml/textbox/urlversionpath");
+            if (UrlVersionPath == "") UrlVersionPath = "v1";
 
             CurrencyCode = oInfo.PurchaseInfo.GetXmlProperty("genxml/currencycode");
             if (CurrencyCode == "") CurrencyCode = settings.GetXmlProperty("genxml/textbox/currencycode");
@@ -49,17 +53,9 @@ namespace OS_PayPlug
             ReturnCancelUrl = Globals.NavigateURL(StoreSettings.Current.PaymentTabId, "", param);
             NotifyUrl = Utils.ToAbsoluteUrl("/DesktopModules/NBright/OS_PayPlug/notify.ashx");
             MerchantLanguage = Utils.GetCurrentCulture();
-            Amount = (appliedtotal - alreadypaid).ToString("0.00", CultureInfo.InvariantCulture);
-            Email = oInfo.PurchaseInfo.GetXmlProperty("genxml/billaddress/textbox/billaddress");
-            if (!Utils.IsEmail(Email)) Email = oInfo.PurchaseInfo.GetXmlProperty("genxml/extrainfo/textbox/cartemailaddress");
-            // set shipping and tax to zero, these should be calculated by the store so the amount should always be correct.
-            // for some reason paypal seem to add shipping and tax to the total.  
-            // Not sure if this is a new change by paypal, or if it's always been wrong!!
-            //ShippingAmount = oInfo.PurchaseInfo.GetXmlPropertyDouble("genxml/shippingcost").ToString("0.00", CultureInfo.InvariantCulture);
-            //TaxAmount = oInfo.PurchaseInfo.GetXmlPropertyDouble("genxml/taxcost").ToString("0.00", CultureInfo.InvariantCulture);
-            const int zero = 0;
-            ShippingAmount = zero.ToString("0.00", CultureInfo.InvariantCulture);
-            TaxAmount = zero.ToString("0.00", CultureInfo.InvariantCulture);
+            Amount = ((appliedtotal - alreadypaid) * 100).ToString();
+            Email = oInfo.PurchaseInfo.GetXmlProperty("genxml/billaddress/genxml/textbox/email");
+            if (!Utils.IsEmail(Email)) Email = oInfo.PurchaseInfo.GetXmlProperty("genxml/extrainfo/genxml/textbox/cartemailaddress");
         }
 
         public string ItemId { get; set; }
@@ -76,132 +72,14 @@ namespace OS_PayPlug
         public string Email { get; set; }
         public string ShippingAmount { get; set; }
         public string TaxAmount { get; set; }
-
+        public string SecretKey { get; set; }
+        public string ApiBaseUrl { get; set; }
+        public string ApiVersion { get; set; }
+        public string UrlVersionPath { get; set; }
+        public string ApiBasePath { get { return ApiBaseUrl + "/" + UrlVersionPath.Trim('/');  }  }
         
-        
-
     }
 
-    public class PayPalIpnParameters
-    {
-
-        public PayPalIpnParameters(HttpRequest ipnRequest)
-        {
-            var param = ipnRequest.BinaryRead(ipnRequest.ContentLength);
-            var strRequest = Encoding.ASCII.GetString(param);
-            _postString = "cmd=_notify-validate&" + strRequest;
-
-            NameValueCollection requestForm = ipnRequest.Form;
-            foreach (string paramName in requestForm)
-            {
-                switch (paramName)
-                {
-                    case "payment_status":
-                        _payment_status = requestForm[paramName];
-                        break;
-                    case "item_number":
-                        _item_number = Convert.ToInt32(requestForm[paramName]);
-                        break;
-                    case "custom":
-                        _custom = requestForm[paramName];
-                        break;
-                }
-            }
-
-        }
-
-        private string _postString = string.Empty;
-        private string _payment_status = string.Empty;
-        private string _txn_id = string.Empty;
-        private string _receiver_email = string.Empty;
-        private string _email = string.Empty;
-        private string _custom = "";
-        private int _item_number = -1;
-        private decimal _mc_gross = -1;
-        private decimal _shipping = -1;
-
-        private decimal _tax = -1;
-        public string PostString
-        {
-            get { return _postString; }
-            set { _postString = value; }
-        }
-
-        public string payment_status
-        {
-            get { return _payment_status; }
-            set { _payment_status = value; }
-        }
-
-        public string txn_id
-        {
-            get { return _txn_id; }
-            set { _txn_id = value; }
-        }
-
-        public string receiver_email
-        {
-            get { return _receiver_email; }
-            set { _receiver_email = value; }
-        }
-
-        public string email
-        {
-            get { return _email; }
-            set { _email = value; }
-        }
-
-        public string custom
-        {
-            get { return _custom; }
-            set { _custom = value; }
-        }
-
-        public int item_number
-        {
-            get { return _item_number; }
-            set { _item_number = value; }
-        }
-
-        public decimal mc_gross
-        {
-            get { return _mc_gross; }
-            set { _mc_gross = value; }
-        }
-
-        public decimal shipping
-        {
-            get { return _shipping; }
-            set { _shipping = value; }
-        }
-
-        public decimal tax
-        {
-            get { return _tax; }
-            set { _tax = value; }
-        }
-
-        public int CartID
-        {
-            get { return _item_number; }
-        }
-
-        public bool IsValid
-        {
-            get
-            {
-                if (_payment_status != "Completed" & _payment_status != "Pending")
-                {
-                    return false;
-                }
-                else
-                {
-                    return true;
-                }
-            }
-        }
-
-    }
 
 
 }

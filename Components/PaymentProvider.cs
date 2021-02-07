@@ -10,7 +10,6 @@ using DotNetNuke.Entities.Users;
 using NBrightCore.common;
 using NBrightDNN;
 using Nevoweb.DNN.NBrightBuy.Components;
-using OS_PayPlug.Components;
 
 namespace OS_PayPlug
 {
@@ -47,44 +46,22 @@ namespace OS_PayPlug
             try
             {
 
-                 var paymentData = new Dictionary<string, dynamic>
-                 {
-                     { "amount", 3300},
-                     { "currency", "EUR"},
-                     {
-                        "customer", new Dictionary<string, object>
- 
-                         {
-                             { "email", "john.watson@example.net"},
-                             { "first_name", "John"},
-                             { "last_name", "Watson"}
-                         }
-                     },
-                     {
-                        "hosted_payment", new Dictionary<string, object>
- 
-                         {
-                             { "return_url", "https://example.net/success?id=42710"},
-                             { "cancel_url", "https://example.net/cancel?id=42710"}
-                         }
-                     },
-                     { "notification_url", "https://example.net/notifications?id=42710"},
-                     {
-                        "metadata", new Dictionary<string, object>
- 
-                         {
-                             { "customer_id", "42710"}
-                         }
-                     },
-                     { "save_card", false},
-                     { "force_3ds", true}
-                 };
-                 var payment = PaymentUtils.Create(paymentData);
+                 var payPlugData = new PayPlugLimpet(orderData);
 
+                var paymentkey = payPlugData.CreatePayment();
+                if (paymentkey != null && paymentkey.ContainsKey("hosted_payment"))
+                {
+                    var hosted_payment = paymentkey["hosted_payment"];
+                    if (hosted_payment != null)
+                    {
+                        orderData.PurchaseInfo.SetXmlProperty("genxml/posturl", hosted_payment["payment_url"].Value);
+                        orderData.PurchaseInfo.SetXmlProperty("genxml/paymentkey", paymentkey["id"]);
+                        orderData.Save();
 
-
-                HttpContext.Current.Response.Clear();
-                HttpContext.Current.Response.Write(ProviderUtils.GetBankRemotePost(orderData));
+                        HttpContext.Current.Response.Clear();
+                        HttpContext.Current.Response.Write(ProviderUtils.GetBankRemotePost(orderData));
+                    }
+                }
             }
             catch (Exception ex)
             {
