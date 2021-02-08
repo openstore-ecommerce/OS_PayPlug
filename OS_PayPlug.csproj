@@ -98,6 +98,7 @@
     <None Include="app.config" />
     <None Include="DNNpackager.dnnpack" />
     <None Include="notify.ashx" />
+    <None Include="OS_PayPlug.dnn" />
     <None Include="README.md" />
     <None Include="Themes\config\default\methodselection.cshtml" />
     <None Include="Themes\config\default\payment_fail.cshtml" />
@@ -122,7 +123,6 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>
-DNNpackager.exe  $(ProjectDir) $(ProjectDir)$(OutDir) $(ConfigurationName)</PostBuildEvent>
+    <PostBuildEvent>DNNpackager.exe  $(ProjectDir) $(ProjectDir)$(OutDir) $(ConfigurationName)</PostBuildEvent>
   </PropertyGroup>
 </Project>
