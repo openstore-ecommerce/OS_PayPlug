@@ -130,7 +130,7 @@
     <value>Message</value>
   </data>
   <data name="Messagevalue.Text" xml:space="preserve">
-    <value>Vous serez redirigé pour le système de paiement sécurisé des banques pour effectuer votre paiement.</value>
+    <value>Vous allez être redirigé vers notre système de paiement sécurisé pour effectuer votre paiement. </value>
   </data>
   <data name="Title.Text" xml:space="preserve">
     <value>Titre</value>
